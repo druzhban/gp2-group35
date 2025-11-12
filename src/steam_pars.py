@@ -1,6 +1,3 @@
-# 🚀 UNIVERSAL STEAM SCRAPER (multi-device, resilient, staged)
-# Поддерживает: многопоточность, несколько устройств, логирование, восстановление прогресса
-
 import os
 import csv
 import time
@@ -10,16 +7,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-# ---------------- CONFIG ----------------
-DEVICE_ID = 1          # номер устройства (1, 2, 3)
-DEVICE_COUNT = 3       # общее количество устройств
-MAX_THREADS = 5        # потоков
-BATCH_SIZE = 40        # сколько ссылок парсить перед сохранением
+#CONFIG
+DEVICE_ID = 1         
+DEVICE_COUNT = 3       
+MAX_THREADS = 5        
+BATCH_SIZE = 40        
 OUTPUT_DIR = "results"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 PROGRESS_FILE = f"progress_{DEVICE_ID}.txt"
 ERROR_LOG = f"errors_{DEVICE_ID}.log"
-# ----------------------------------------
 
 def init_driver():
     opts = Options()
@@ -29,13 +25,11 @@ def init_driver():
     opts.add_argument("--disable-dev-shm-usage")
     return webdriver.Chrome(options=opts)
 
-# ======================================================
 #  ЭТАП 1: СБОР ССЫЛОК (разделяется между устройствами)
-# ======================================================
 def get_search_pages():
     """Генерация страниц поиска"""
     base = "https://store.steampowered.com/search/?category1=998&page="
-    pages = [f"{base}{i}" for i in range(1, 401)]  # пример: 300 страниц
+    pages = [f"{base}{i}" for i in range(1, 401)]
     return pages[DEVICE_ID-1::DEVICE_COUNT]
 
 def collect_links_from_page(url):
@@ -49,14 +43,14 @@ def collect_links_from_page(url):
             if href:
                 links.add(href.split("?")[0])
     except Exception as e:
-        print(f"⚠️ Ошибка страницы {url}: {e}")
+        print(f"Ошибка страницы {url}: {e}")
     finally:
         driver.quit()
     return list(links)
 
 def collect_links():
     pages = get_search_pages()
-    print(f"🧩 Устройство {DEVICE_ID}: {len(pages)} страниц поиска")
+    print(f"Устройство {DEVICE_ID}: {len(pages)} страниц поиска")
     all_links = []
     with ThreadPoolExecutor(MAX_THREADS) as ex:
         futures = [ex.submit(collect_links_from_page, p) for p in pages]
@@ -65,11 +59,9 @@ def collect_links():
     filename = f"links_part_{DEVICE_ID}.csv"
     with open(filename, "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows([[x] for x in sorted(set(all_links))])
-    print(f"💾 Устройство {DEVICE_ID}: сохранено {len(all_links)} ссылок в {filename}")
+    print(f"Устройство {DEVICE_ID}: сохранено {len(all_links)} ссылок в {filename}")
 
-# ======================================================
-#  ЭТАП 2: ПАРСИНГ ИГР С ВОЗОБНОВЛЕНИЕМ
-# ======================================================
+#ЭТАП 2: ПАРСИНГ ИГР С ВОЗОБНОВЛЕНИЕМ
 def parse_game(link):
     driver = init_driver()
     try:
@@ -102,7 +94,7 @@ def update_progress(link):
 def parse_links():
     filename = f"links_part_{DEVICE_ID}.csv"
     if not os.path.exists(filename):
-        print(f"❌ Нет файла {filename}. Сначала собери ссылки.")
+        print(f"Нет файла {filename}. Сначала собери ссылки.")
         return
 
     with open(filename, encoding="utf-8") as f:
@@ -110,7 +102,7 @@ def parse_links():
 
     done = get_completed_links()
     pending = [x for x in links if x not in done]
-    print(f"🧩 Устройство {DEVICE_ID}: {len(done)} готово, {len(pending)} осталось.")
+    print(f"Устройство {DEVICE_ID}: {len(done)} готово, {len(pending)} осталось.")
 
     batch_num = 0
     for i in range(0, len(pending), BATCH_SIZE):
@@ -132,9 +124,8 @@ def parse_links():
         print(f"💾 {DEVICE_ID}: Сохранен файл {out_file} ({len(results)} записей)")
         time.sleep(random.uniform(2, 5))
 
-# ======================================================
+
 #  ДОП: Объединение ссылок и результатов
-# ======================================================
 def merge_links():
     """Объединяет все links_part_X.csv в один steam_links.csv"""
     all_links = set()
@@ -145,7 +136,7 @@ def merge_links():
                 all_links.update(row[0] for row in csv.reader(ff))
     with open("steam_links.csv", "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows([[x] for x in sorted(all_links)])
-    print(f"✅ Объединено {len(all_links)} ссылок в steam_links.csv")
+    print(f"Объединено {len(all_links)} ссылок в steam_links.csv")
 
 def merge_results():
     """Объединяет все CSV с результатами"""
@@ -161,11 +152,9 @@ def merge_results():
         writer = csv.DictWriter(f, fieldnames=["title", "release", "price", "url", "error"])
         writer.writeheader()
         writer.writerows(all_rows)
-    print(f"✅ Все части объединены в steam_full.csv ({len(all_rows)} записей)")
+    print(f"Все части объединены в steam_full.csv ({len(all_rows)} записей)")
 
-# ======================================================
 #  ОСНОВНОЙ ВХОД
-# ======================================================
 if __name__ == "__main__":
     # --- Этап 1: сбор ссылок ---
     # collect_links()
