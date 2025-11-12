@@ -1,0 +1,21 @@
+﻿id,name,slug,platforms_count,games_count
+4,PC,pc,0,559070
+171,Web,web,0,260068
+5,macOS,macos,0,107814
+6,Linux,linux,0,80202
+3,iOS,ios,0,77418
+21,Android,android,0,52488
+18,PlayStation 4,playstation4,0,6948
+7,Nintendo Switch,nintendo-switch,0,5718
+1,Xbox One,xbox-one,0,5713
+16,PlayStation 3,playstation3,0,3165
+14,Xbox 360,xbox360,0,2808
+9,Nintendo DS,nintendo-ds,0,2485
+11,Wii,wii,0,2208
+166,Commodore / Amiga,commodore-amiga,0,2084
+15,PlayStation 2,playstation2,0,2068
+27,PlayStation,playstation1,0,1682
+8,Nintendo 3DS,nintendo-3ds,0,1682
+19,PS Vita,ps-vita,0,1456
+17,PSP,psp,0,1377
+187,PlayStation 5,playstation5,0,1354
