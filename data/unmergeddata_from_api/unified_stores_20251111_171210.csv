@@ -1,0 +1,11 @@
+﻿id,name,slug,domain,games_count
+1,Steam,steam,store.steampowered.com,121942
+3,PlayStation Store,playstation-store,store.playstation.com,8061
+2,Xbox Store,xbox-store,microsoft.com,4930
+4,App Store,apple-appstore,apps.apple.com,75588
+5,GOG,gog,gog.com,7043
+6,Nintendo Store,nintendo,nintendo.com,9141
+7,Xbox 360 Store,xbox360,marketplace.xbox.com,1915
+8,Google Play,google-play,play.google.com,17124
+9,itch.io,itch,itch.io,654175
+11,Epic Games,epic-games,epicgames.com,1424
